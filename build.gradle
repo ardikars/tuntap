@@ -1,0 +1,68 @@
+buildscript {
+
+    apply from: "${rootDir}/gradle/configure.gradle"
+
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+}
+
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'com.diffplug.gradle.spotless' version '4.3.1'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE' apply false
+    id 'org.sonarqube' version '3.0' apply false
+}
+
+repositories {
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://oss.jfrog.org/artifactory/oss-snapshot-local/"
+        }
+    }
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = "${GROUP}"
+    version = "${VERSION}"
+
+    sourceCompatibility = "${JAVA_VERSION}"
+    targetCompatibility = "${JAVA_VERSION}"
+
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://oss.jfrog.org/artifactory/oss-snapshot-local/"
+        }
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    }
+
+    dependencyManagement {
+        imports { mavenBom("com.ardikars.pcap:pcap:${PCAP_VERSION}") }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+
+if (gradle.startParameter.taskNames.contains('jacocoTestReport')) {
+    apply from: 'gradle/codeCoverage.gradle'
+}

@@ -1,0 +1,19 @@
+ext {
+
+    NAME = 'Tun/Tap'
+    GROUP = 'com.ardikars.tuntap'
+    VERSION = '0.0.1'
+
+    JAVA_VERSION = '14'
+
+    PCAP_VERSION = '0.0.18'
+    JACOCO_VERSION = '0.8.5'
+
+    defaultBlank = { closure ->
+        try {
+            closure()
+        } catch (MissingPropertyException e) {
+            ''
+        }
+    }
+}

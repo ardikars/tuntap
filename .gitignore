@@ -1,0 +1,12 @@
+.gradle
+.idea
+*.log
+*~
+*.iml
+*.jar
+*.class
+
+build
+out
+tuntap-api/build
+tuntap-api/out
