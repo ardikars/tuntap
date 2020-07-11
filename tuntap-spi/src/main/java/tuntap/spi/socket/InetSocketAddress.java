@@ -2,6 +2,9 @@
 package tuntap.spi.socket;
 
 import pcap.common.net.Inet4Address;
+import pcap.common.util.Strings;
+
+import java.util.Objects;
 
 public class InetSocketAddress implements SocketAddress {
 
@@ -30,5 +33,27 @@ public class InetSocketAddress implements SocketAddress {
 
   public Inet4Address address() {
     return inetAddress;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    InetSocketAddress that = (InetSocketAddress) o;
+    return family == that.family && port == that.port && inetAddress.equals(that.inetAddress);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(family, port, inetAddress);
+  }
+
+  @Override
+  public String toString() {
+    return Strings.toStringBuilder(this)
+        .add("family", family())
+        .add("port", port())
+        .add("address", address())
+        .toString();
   }
 }

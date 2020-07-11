@@ -1,0 +1,47 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-16.04']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: actions/setup-panama
+        run: |
+          sudo mkdir -p /usr/local/jvm
+          sudo chown -R $(whoami) /usr/local/jvm
+          ./.github/scripts/install-jdk.sh -f panama -w /tmp -t /usr/local/jvm/panama -v
+          sudo find /usr/local/jvm/panama/lib/ -iname "libjli*"
+          sudo cp /usr/local/jvm/panama/lib/libjli*.so /usr/lib
+        if: matrix.os == 'ubuntu-16.04'
+
+      - name: Build (Ubuntu)
+        run: |
+          export JAVA_HOME=/usr/local/jvm/panama
+          echo "JAVA_HOME = $JAVA_HOME"
+          sudo setcap cap_net_raw,cap_net_admin=eip $JAVA_HOME/bin/java
+
+          echo "systemProp.sonar.login=${{ secrets.sonar_token }}" > gradle.properties
+          ./gradlew clean build jacocoTestReport sonar
+        if: matrix.os == 'ubuntu-16.04'

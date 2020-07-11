@@ -3,6 +3,9 @@ package tuntap.spi.socket;
 
 import pcap.common.net.Inet6Address;
 import pcap.common.util.Platforms;
+import pcap.common.util.Strings;
+
+import java.util.Objects;
 
 public class Inet6SocketAddress implements SocketAddress {
 
@@ -50,14 +53,42 @@ public class Inet6SocketAddress implements SocketAddress {
     return scopeId;
   }
 
-  private static int defaultFamily() {
-      if (Platforms.isLinux()) {
-          return 10;
-      } else if (Platforms.isDarwin()) {
-          return 30;
-      } else if (Platforms.isWindows()) {
-          return 23;
-      }
-      return 0;
+  static int defaultFamily() {
+    if (Platforms.isLinux()) {
+      return 10;
+    } else if (Platforms.isDarwin()) {
+      return 30;
+    } else if (Platforms.isWindows()) {
+      return 23;
+    }
+    return 0;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Inet6SocketAddress that = (Inet6SocketAddress) o;
+    return family == that.family
+        && port == that.port
+        && flowInfo == that.flowInfo
+        && scopeId == that.scopeId
+        && inetAddress.equals(that.inetAddress);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(family, port, flowInfo, inetAddress, scopeId);
+  }
+
+  @Override
+  public String toString() {
+    return Strings.toStringBuilder(this)
+        .add("family", family())
+        .add("port", port())
+        .add("flowInfo", flowInfo())
+        .add("address", address())
+        .add("scopeId", scopeId())
+        .toString();
   }
 }
