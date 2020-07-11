@@ -2,8 +2,6 @@
 package tuntap.spi.socket;
 
 import pcap.common.net.Inet4Address;
-import tuntap.api.constant.AddressFamily;
-import tuntap.spi.socket.SocketAddress;
 
 public class InetSocketAddress implements SocketAddress {
 
@@ -12,7 +10,7 @@ public class InetSocketAddress implements SocketAddress {
   private final Inet4Address inetAddress;
 
   public InetSocketAddress(int port, Inet4Address inetAddress) {
-    this(AddressFamily.AF_INET(), port, inetAddress);
+    this(2, port, inetAddress);
   }
 
   public InetSocketAddress(int family, int port, Inet4Address inetAddress) {

@@ -12,7 +12,7 @@ import tuntap.spi.socket.SocketAddress;
 import tuntap.api.constant.AddressFamily;
 import tuntap.api.constant.SendFlag;
 import tuntap.api.constant.Shutdown;
-import tuntap.api.constant.SocketOption;
+import tuntap.spi.socket.SocketOption;
 import tuntap.api.internal.foreign.linux.*;
 
 import java.foreign.NativeTypes;

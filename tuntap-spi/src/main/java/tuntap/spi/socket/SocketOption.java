@@ -1,5 +1,5 @@
 /** This code is licenced under the BSD-3-Clause. */
-package tuntap.api.constant;
+package tuntap.spi.socket;
 
 import pcap.common.util.MultipleObject;
 import pcap.common.util.Platforms;

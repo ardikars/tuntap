@@ -2,8 +2,7 @@
 package tuntap.spi.socket;
 
 import pcap.common.net.Inet6Address;
-import tuntap.api.constant.AddressFamily;
-import tuntap.spi.socket.SocketAddress;
+import pcap.common.util.Platforms;
 
 public class Inet6SocketAddress implements SocketAddress {
 
@@ -18,7 +17,7 @@ public class Inet6SocketAddress implements SocketAddress {
   }
 
   public Inet6SocketAddress(int port, long flowInfo, Inet6Address inetAddress, long scopeId) {
-    this(AddressFamily.AF_INET6(), port, flowInfo, inetAddress, scopeId);
+    this(defaultFamily(), port, flowInfo, inetAddress, scopeId);
   }
 
   public Inet6SocketAddress(
@@ -49,5 +48,16 @@ public class Inet6SocketAddress implements SocketAddress {
 
   public long scopeId() {
     return scopeId;
+  }
+
+  private static int defaultFamily() {
+      if (Platforms.isLinux()) {
+          return 10;
+      } else if (Platforms.isDarwin()) {
+          return 30;
+      } else if (Platforms.isWindows()) {
+          return 23;
+      }
+      return 0;
   }
 }

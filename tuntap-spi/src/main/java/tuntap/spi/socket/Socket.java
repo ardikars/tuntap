@@ -2,7 +2,6 @@
 package tuntap.spi.socket;
 
 import pcap.common.memory.Memory;
-import tuntap.api.constant.SocketOption;
 
 public interface Socket {
 
