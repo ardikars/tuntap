@@ -11,10 +11,6 @@ public interface TunTap {
 
   TunTap down();
 
-  int mtu();
-
-  int readable();
-
   int read(Memory buffer);
 
   int write(Memory buffer);

@@ -1,4 +1,4 @@
 rootProject.name = 'tuntap'
 include 'tuntap-api'
 include 'tuntap-spi'
-
+include 'tuntap-tests'

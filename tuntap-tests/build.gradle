@@ -1,0 +1,7 @@
+
+dependencies {
+    testImplementation 'com.ardikars.pcap:pcap-common'
+    testImplementation 'com.ardikars.pcap:pcap-codec'
+    testImplementation project(':tuntap-spi')
+    testImplementation project(':tuntap-api')
+}

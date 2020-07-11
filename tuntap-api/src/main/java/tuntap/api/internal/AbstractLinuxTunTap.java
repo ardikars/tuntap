@@ -15,6 +15,7 @@ import java.foreign.Scope;
 import java.foreign.memory.Array;
 import java.foreign.memory.LayoutType;
 import java.foreign.memory.Pointer;
+import java.nio.ByteBuffer;
 
 abstract class AbstractLinuxTunTap implements TunTap {
 
@@ -84,30 +85,15 @@ abstract class AbstractLinuxTunTap implements TunTap {
   }
 
   @Override
-  public int mtu() {
-    return ifr.get().ifr_ifru$get().ifru_mtu$get();
-  }
-
-  @Override
-  public int readable() {
-    try (Scope scope = Scope.globalScope().fork()) {
-      Pointer<Integer> n = scope.allocate(NativeTypes.INT32);
-      if (NativeIoctl.ioctl(fd, FIONREAD, n) < 0) {
-        return mtu();
-      }
-      return n.get();
-    }
-  }
-
-  @Override
   public int read(Memory buffer) {
-    return NativeUnistd.read(fd, Pointer.fromByteBuffer(buffer.nioBuffer()), buffer.capacity());
+    ByteBuffer direct = buffer.nioBuffer();
+    return NativeUnistd.read(fd, Pointer.fromByteBuffer(direct), buffer.capacity());
   }
 
   @Override
   public int write(Memory buffer) {
-    return NativeUnistd.write(
-        fd, Pointer.fromByteBuffer(buffer.nioBuffer()), buffer.writableBytes());
+    ByteBuffer direct = buffer.nioBuffer();
+    return NativeUnistd.write(fd, Pointer.fromByteBuffer(direct), buffer.writerIndex());
   }
 
   @Override
