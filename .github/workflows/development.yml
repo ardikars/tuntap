@@ -42,7 +42,8 @@ jobs:
           export JAVA_HOME=/usr/local/jvm/panama
           echo "JAVA_HOME = $JAVA_HOME"
           sudo setcap cap_net_raw,cap_net_admin=eip $JAVA_HOME/bin/java
-
-          echo "systemProp.sonar.login=${{ secrets.sonar_token }}" > gradle.properties
+          echo "sonarToken=${{ secrets.sonar_token }}" > gradle.properties
           ./gradlew clean build jacocoTestReport sonar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: matrix.os == 'ubuntu-16.04'

@@ -15,6 +15,7 @@ allprojects {
             property "sonar.projectKey", "com.ardikars.tuntap:tuntap"
             property "sonar.organization", "ardikars"
             property "sonar.host.url", "https://sonarcloud.io"
+            property "sonar.login", defaultBlank({ sonarToken })
         }
     }
 }
