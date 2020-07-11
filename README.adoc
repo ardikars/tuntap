@@ -2,7 +2,7 @@
 # Tuntap
 ========
 
-Library for creating and configuring tun/tap interface.
+Library for creating and configuring tun/tap interface inspired by https://github.com/LaKabane/libtuntap[libtuntap].
 
 
 image:https://sonarcloud.io/api/project_badges/measure?project=com.ardikars.tuntap%3Atuntap&metric=sqale_rating["Coverage" link="https://sonarcloud.io/dashboard?id=com.ardikars.tuntap:tuntap"]
