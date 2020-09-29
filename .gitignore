@@ -1,0 +1,14 @@
+*.iml
+.idea
+*.jar
+*.class
+*.log
+
+.gnupg/*.gpg-agent*
+.gnupg/private-keys*
+.gnupg/.gpg*
+.gnupg/secring.gpg
+
+.mvn/*settings.xml
+
+target

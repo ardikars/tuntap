@@ -1,0 +1,29 @@
+[package]
+name = "tuntap"
+# Also don't forget to update the version in the html_root_url attribute in src/lib.rs
+version = "0.0.1"
+authors = ["Michal 'vorner' Vaner <vorner@vorner.cz>"]
+description = "TUN/TAP interface wrapper"
+documentation = "https://docs.rs/tun-tap"
+repository = "https://github.com/ardikars/tuntap"
+readme = "README.md"
+keywords = ["tun", "tap", "network"]
+categories = ["network-programming"]
+license = "Apache-2.0/MIT"
+
+[badges]
+maintenance = { status = "passively-maintained" }
+
+[build-dependencies]
+cc = "~1"
+
+[dependencies]
+libc = { version = "~0.2", optional = true }
+
+[[bin]]
+name = "main"
+path = "test/rust/main.rs"
+
+[lib]
+name = "tuntap"
+path = "src/rust/lib.rs"
