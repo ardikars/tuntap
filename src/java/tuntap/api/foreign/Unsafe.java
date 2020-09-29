@@ -3,7 +3,10 @@ package tuntap.api.foreign;
 import jnr.ffi.LibraryLoader;
 import jnr.ffi.Pointer;
 import jnr.ffi.Runtime;
+import jnr.ffi.annotations.In;
+import jnr.ffi.annotations.Transient;
 import jnr.ffi.types.size_t;
+import jnr.ffi.types.socklen_t;
 import jnr.ffi.types.ssize_t;
 
 public class Unsafe {
@@ -14,6 +17,8 @@ public class Unsafe {
     public interface Native {
 
         int socket(int domain, int type, int protocol);
+
+        int connect(int socket, @In @Transient sockaddr address, @socklen_t long address_len);
 
         int open(String pathname, int flags);
 

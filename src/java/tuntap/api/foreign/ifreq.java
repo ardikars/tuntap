@@ -47,11 +47,11 @@ public class ifreq extends Struct {
 
     public ifreq(Runtime runtime) {
         super(runtime);
-        this.ifru_addr = inner(new sockaddr(runtime));
-        this.ifru_dstaddr = inner(new sockaddr(runtime));
-        this.ifru_broadaddr = inner(new sockaddr(runtime));
-        this.ifru_netmask = inner(new sockaddr(runtime));
-        this.ifru_hwaddr = inner(new sockaddr(runtime));
+        this.ifru_addr = inner(new sockaddr.default_sockaddr(runtime));
+        this.ifru_dstaddr = inner(new sockaddr.default_sockaddr(runtime));
+        this.ifru_broadaddr = inner(new sockaddr.default_sockaddr(runtime));
+        this.ifru_netmask = inner(new sockaddr.default_sockaddr(runtime));
+        this.ifru_hwaddr = inner(new sockaddr.default_sockaddr(runtime));
         this.ifru_map = inner(new ifmap(runtime));
     }
 }

@@ -14,4 +14,9 @@ public interface Socket {
     int SOCK_STREAM = 1;
     int SOCK_DGRAM = 2;
     int SOCK_RAW = 3;
+
+    // mac os
+    int PF_SYSTEM = 32;
+
+    int AF_SYSTEM = 32;
 }

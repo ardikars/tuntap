@@ -10,12 +10,11 @@ import tuntap.Buffer;
 import tuntap.Interface;
 import tuntap.api.buffer.DirectBuffer;
 import tuntap.api.foreign.Unsafe;
-import tuntap.api.foreign.constant.Ifreq;
-import tuntap.api.foreign.constant.Ioctl;
-import tuntap.api.foreign.constant.Socket;
-import tuntap.api.foreign.constant.Tun;
+import tuntap.api.foreign.constant.*;
+import tuntap.api.foreign.ctl_info;
 import tuntap.api.foreign.ifreq;
-import tuntap.api.option.TunTapOption;
+import tuntap.api.foreign.sockaddr;
+ import tuntap.api.option.TunTapOption;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -32,10 +31,42 @@ public class TunTapInterface implements Interface, AutoCloseable {
     private final String name;
 
     public TunTapInterface(TunTapOption option) {
-        if (Platform.getNativePlatform().isUnix()) {
+        if (Platform.getNativePlatform().isBSD()) {
             int rc;
-            this.fd = Unsafe.NATIVE.open("/dev/net/tun", O_RDWR);
-            if (fd < 0) {
+            if ((this.fd = Unsafe.NATIVE.socket(Socket.PF_SYSTEM, Socket.SOCK_DGRAM, SysDomain.SYSPROTO_CONTROL)) < 0) {
+                throw new RuntimeException();
+            }
+            long CTLIOCGINFO = 3227799043L;
+            ctl_info info = new ctl_info(Unsafe.RUNTIME);
+            Unsafe.NATIVE.memset(Struct.getMemory(info), 0, Struct.size(info));
+            info.ctl_name.set(UTun.UTUN_CONTROL_NAME);
+            if ((rc = Unsafe.NATIVE.ioctl(fd, CTLIOCGINFO, Struct.getMemory(info))) < 0) {
+                Unsafe.NATIVE.close(rc);
+                throw new RuntimeException();
+            }
+            sockaddr.sockaddr_ctl addr = new sockaddr.sockaddr_ctl(Unsafe.RUNTIME);
+            addr.sc_id.set(info.ctl_id.longValue());
+            addr.sc_len.set(Struct.size(addr));
+            addr.sc_family.set(Socket.AF_SYSTEM);
+            addr.ss_sysaddr.set(SysDomain.AF_SYS_CONTROL);
+
+            rc = -1;
+            int max = 3;
+            int i = 0;
+            while (rc < 0 && i < max) {
+                addr.sc_unit.set(i);
+                if ((rc = Unsafe.NATIVE.connect(fd, addr, Struct.size(addr))) < 0) {
+                    i++;
+                }
+            }
+            if (rc < 0 && i == max) {
+                Unsafe.NATIVE.close(fd);
+                throw new RuntimeException();
+            }
+            this.name = "utun" + i;
+        } else if (Platform.getNativePlatform().isUnix()) {
+            int rc;
+            if ((this.fd = Unsafe.NATIVE.open("/dev/net/tun", O_RDWR)) < 0) {
                 throw new RuntimeException();
             }
             int TUNSETIFF = 1074025674;
