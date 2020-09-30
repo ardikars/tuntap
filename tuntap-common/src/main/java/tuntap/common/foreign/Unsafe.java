@@ -24,7 +24,7 @@ public class Unsafe {
 
         int socket(int domain, int type, int protocol);
 
-        int connect(int socket, @In @Transient sockaddr address, @socklen_t long address_len);
+        int connect(int socket, @In @Out @Transient sockaddr address, @socklen_t long address_len);
 
         int open(String pathname, int flags);
 

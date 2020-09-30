@@ -36,12 +36,12 @@ public class TunTapInterface implements Interface {
         addr.sc_len.set(Struct.size(addr));
         addr.sc_family.set(Socket.AF_SYSTEM);
         addr.ss_sysaddr.set(SysDomain.AF_SYS_CONTROL);
-        addr.sc_unit.set(options.id());
+        addr.sc_unit.set(options.id() + 1);
         if ((rc = Unsafe.NATIVE.connect(fd, addr, Struct.size(addr))) < 0) {
             Unsafe.NATIVE.close(fd);
             throw new RuntimeException("Error(" + rc + "): connect()");
         }
-        this.name = "utun" + addr.sc_unit.get();
+        this.name = "utun" + (addr.sc_unit.get() - 1);
         this.id = new Id((int) addr.sc_unit.get(), fd);
     }
 

@@ -3,4 +3,5 @@ dependencies {
     implementation project(':tuntap-common')
     implementation project(':tuntap-spi')
     compile project(':tuntap-linux')
+    compile project(':tuntap-xnu')
 }

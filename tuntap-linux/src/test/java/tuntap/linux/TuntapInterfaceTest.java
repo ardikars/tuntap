@@ -15,13 +15,13 @@ public class TuntapInterfaceTest {
 
     Interface tun;
 
-    @BeforeEach
+//    @BeforeEach
     public void open() {
         Service service = Service.Loader.load("tuntap-linux");
         tun = service.create(new InterfaceOptions().mode(InterfaceMode.tap()).id(0).name("helo"));
     }
 
-    @Test
+//    @Test
     public void readWrite() {
         Pointer ptr = Memory.allocate(Unsafe.RUNTIME, 1504);
         Buffer buffer = new TunTapBuffer(ptr, 1504);
@@ -34,7 +34,7 @@ public class TuntapInterfaceTest {
         System.out.println();
     }
 
-    @AfterEach
+//    @AfterEach
     void close() {
         tun.close();
     }
