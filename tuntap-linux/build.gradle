@@ -2,5 +2,4 @@ dependencies {
     implementation('com.github.jnr:jnr-ffi:2.2.0')
     implementation project(':tuntap-common')
     implementation project(':tuntap-spi')
-    compile project(':tuntap-linux')
 }

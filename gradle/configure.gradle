@@ -4,7 +4,7 @@ ext {
     GROUP = 'com.ardikars.tuntap'
     VERSION = '0.0.1'
 
-    JAVA_VERSION = '14'
+    JAVA_VERSION = '8'
 
     PCAP_VERSION = '0.0.18'
     JACOCO_VERSION = '0.8.5'

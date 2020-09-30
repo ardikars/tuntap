@@ -1,4 +1,2 @@
-
 dependencies {
-    implementation 'com.ardikars.pcap:pcap-common'
 }
