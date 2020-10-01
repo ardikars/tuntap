@@ -10,15 +10,23 @@ public interface Buffer {
 
     long readableBytes();
 
+    Buffer markReaderIndex();
+
+    Buffer resetReaderIndex();
+
     long writerIndex();
 
     Buffer writerIndex(long writerIndex);
 
     long writeableBytes();
 
+    Buffer markWriterIndex();
+
+    Buffer resetWriterIndex();
+
     long address();
 
-    <T> T buffer(Class<T> buffer);
+    <T> T cast(Class<T> buffer);
 
     void close();
 

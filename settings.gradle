@@ -1,6 +1,4 @@
 rootProject.name = 'tuntap'
 include 'tuntap-spi'
-include 'tuntap-linux'
-include 'tuntap-xnu'
-include 'tuntap-common'
+include 'tuntap-jdk8'
 include 'tuntap-tests'

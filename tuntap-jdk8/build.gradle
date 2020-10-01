@@ -1,0 +1,4 @@
+dependencies {
+    implementation('com.github.jnr:jnr-ffi:2.2.0')
+    implementation project(':tuntap-spi')
+}
