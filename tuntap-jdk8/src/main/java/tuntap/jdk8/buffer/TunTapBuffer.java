@@ -98,7 +98,7 @@ public class TunTapBuffer implements Buffer {
 
     @Override
     public void close() {
-        Unsafe.POSIX.free(buffer);
+        Unsafe.LIB_C.free(buffer);
     }
 
     @Override

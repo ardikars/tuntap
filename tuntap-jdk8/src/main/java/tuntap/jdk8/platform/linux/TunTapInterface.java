@@ -25,12 +25,12 @@ public class TunTapInterface implements Interface {
         InterfaceOptions options = (InterfaceOptions) opt;
         int fd;
         int rc;
-        if ((fd = Unsafe.POSIX.open("/dev/net/tun", O_RDWR)) < 0) {
+        if ((fd = Unsafe.LIB_C.open("/dev/net/tun", O_RDWR)) < 0) {
             throw new RuntimeException();
         }
         int TUNSETIFF = 1074025674;
         ifreq ifr = new ifreq(Unsafe.RUNTIME);
-        Unsafe.POSIX.memset(Struct.getMemory(ifr), 0, Struct.size(ifr));
+        Unsafe.LIB_C.memset(Struct.getMemory(ifr), 0, Struct.size(ifr));
 
         String reqName = options.name();
         if (options.mode().equals(InterfaceMode.tap())) {
@@ -48,37 +48,37 @@ public class TunTapInterface implements Interface {
                 reqName = reqName + options.id();
             }
         }
-        if ((rc = Unsafe.POSIX.snprintf(ifr.ifrn_name.getMemory(), ifreq.IFNAMSIZ, "%s", reqName)) < 0) {
-            Unsafe.POSIX.close(fd);
+        if ((rc = Unsafe.LIB_C.snprintf(ifr.ifrn_name.getMemory(), ifreq.IFNAMSIZ, "%s", reqName)) < 0) {
+            Unsafe.LIB_C.close(fd);
             throw new RuntimeException("Error(" + rc + "): snprintf()");
         }
-        if ((rc = Unsafe.POSIX.ioctl(fd, TUNSETIFF, Struct.getMemory(ifr))) < 0) {
-            Unsafe.POSIX.close(fd);
+        if ((rc = Unsafe.LIB_C.ioctl(fd, TUNSETIFF, Struct.getMemory(ifr))) < 0) {
+            Unsafe.LIB_C.close(fd);
             throw new RuntimeException("Error(" + rc + "): ioctl()");
         }
         this.name = ifr.ifrn_name.get();
 
         int sock;
-        if ((sock = Unsafe.POSIX.socket(Socket.AF_INET, Socket.SOCK_DGRAM, Socket.PF_UNSPEC)) < 0) {
-            Unsafe.POSIX.close(fd);
+        if ((sock = Unsafe.LIB_C.socket(Socket.AF_INET, Socket.SOCK_DGRAM, Socket.PF_UNSPEC)) < 0) {
+            Unsafe.LIB_C.close(fd);
             throw new RuntimeException("Error(" + rc + "): socket()");
         }
-        Unsafe.POSIX.memset(Struct.getMemory(ifr), 0, Struct.size(ifr));
-        if ((rc = Unsafe.POSIX.snprintf(ifr.ifrn_name.getMemory(), ifreq.IFNAMSIZ, "%s", this.name)) < 0) {
-            Unsafe.POSIX.close(fd);
-            Unsafe.POSIX.close(sock);
+        Unsafe.LIB_C.memset(Struct.getMemory(ifr), 0, Struct.size(ifr));
+        if ((rc = Unsafe.LIB_C.snprintf(ifr.ifrn_name.getMemory(), ifreq.IFNAMSIZ, "%s", this.name)) < 0) {
+            Unsafe.LIB_C.close(fd);
+            Unsafe.LIB_C.close(sock);
             throw new RuntimeException("Error(" + rc + "): snprintf()");
         }
-        if ((rc = Unsafe.POSIX.ioctl(sock, Ioctl.SIOCGIFFLAGS, Struct.getMemory(ifr))) != 0) {
-            Unsafe.POSIX.close(sock);
+        if ((rc = Unsafe.LIB_C.ioctl(sock, Ioctl.SIOCGIFFLAGS, Struct.getMemory(ifr))) != 0) {
+            Unsafe.LIB_C.close(sock);
             throw new RuntimeException("Error(" + rc + "): ioctl()");
         }
         ifr.ifru_flags.set(ifr.ifru_flags.get() | Ifreq.IFF_UP);
-        if ((rc = Unsafe.POSIX.ioctl(sock, Ioctl.SIOCSIFFLAGS, Struct.getMemory(ifr))) != 0) {
-            Unsafe.POSIX.close(sock);
+        if ((rc = Unsafe.LIB_C.ioctl(sock, Ioctl.SIOCSIFFLAGS, Struct.getMemory(ifr))) != 0) {
+            Unsafe.LIB_C.close(sock);
             throw new RuntimeException("Error(" + rc + "): ioctl()");
         }
-        Unsafe.POSIX.close(sock);
+        Unsafe.LIB_C.close(sock);
         this.id = new Id(options.id(), fd);
     }
 
@@ -95,20 +95,20 @@ public class TunTapInterface implements Interface {
     @Override
     public void read(Buffer buffer) {
         TunTapBuffer ptrBuf = (TunTapBuffer) buffer;
-        long written = Unsafe.POSIX.read(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.readerIndex()), buffer.writeableBytes());
+        long written = Unsafe.LIB_C.read(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.readerIndex()), buffer.writeableBytes());
         buffer.writerIndex(buffer.writerIndex() + written);
     }
 
     @Override
     public void write(Buffer buffer) {
         TunTapBuffer ptrBuf = (TunTapBuffer) buffer;
-        long nbytes = Unsafe.POSIX.write(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.writerIndex()), buffer.readableBytes());
+        long nbytes = Unsafe.LIB_C.write(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.writerIndex()), buffer.readableBytes());
         buffer.readerIndex(buffer.readerIndex() + nbytes);
     }
 
     @Override
     public void close() {
-        Unsafe.POSIX.close(id.fd);
+        Unsafe.LIB_C.close(id.fd);
     }
 
     public static class Id implements Interface.Id {
@@ -119,6 +119,19 @@ public class TunTapInterface implements Interface {
         public Id(int id, int fd) {
             this.id = id;
             this.fd = fd;
+        }
+
+        @Override
+        public Object handle() {
+            return fd;
+        }
+
+        @Override
+        public String toString() {
+            return "Id{" +
+                    "id=" + id +
+                    ", fd=" + fd +
+                    '}';
         }
     }
 }

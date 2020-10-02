@@ -16,6 +16,7 @@ public interface Interface {
     }
 
     interface Id {
+        Object handle();
     }
 
     interface Mode {

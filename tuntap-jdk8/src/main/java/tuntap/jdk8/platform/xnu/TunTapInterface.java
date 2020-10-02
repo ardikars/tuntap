@@ -22,15 +22,15 @@ public class TunTapInterface implements Interface {
         InterfaceOptions options = (InterfaceOptions) opt;
         int fd;
         int rc;
-        if ((fd = Unsafe.POSIX.socket(Socket.PF_SYSTEM, Socket.SOCK_DGRAM, SysDomain.SYSPROTO_CONTROL)) < 0) {
+        if ((fd = Unsafe.LIB_C.socket(Socket.PF_SYSTEM, Socket.SOCK_DGRAM, SysDomain.SYSPROTO_CONTROL)) < 0) {
             throw new RuntimeException();
         }
         long CTLIOCGINFO = 3227799043L;
         ctl_info info = new ctl_info(Unsafe.RUNTIME);
-        Unsafe.POSIX.memset(Struct.getMemory(info), 0, Struct.size(info));
+        Unsafe.LIB_C.memset(Struct.getMemory(info), 0, Struct.size(info));
         info.ctl_name.set(UTun.UTUN_CONTROL_NAME);
-        if ((rc = Unsafe.POSIX.ioctl(fd, CTLIOCGINFO, Struct.getMemory(info))) < 0) {
-            Unsafe.POSIX.close(rc);
+        if ((rc = Unsafe.LIB_C.ioctl(fd, CTLIOCGINFO, Struct.getMemory(info))) < 0) {
+            Unsafe.LIB_C.close(rc);
             throw new RuntimeException("Error(" + rc + "): ioctl()");
         }
         sockaddr_ctl addr = new sockaddr_ctl(Unsafe.RUNTIME);
@@ -39,8 +39,8 @@ public class TunTapInterface implements Interface {
         addr.sc_family.set(Socket.AF_SYSTEM);
         addr.ss_sysaddr.set(SysDomain.AF_SYS_CONTROL);
         addr.sc_unit.set(options.id() + 1);
-        if ((rc = Unsafe.POSIX.connect(fd, addr, Struct.size(addr))) < 0) {
-            Unsafe.POSIX.close(fd);
+        if ((rc = Unsafe.LIB_C.connect(fd, addr, Struct.size(addr))) < 0) {
+            Unsafe.LIB_C.close(fd);
             throw new RuntimeException("Error(" + rc + "): connect()");
         }
         this.name = "utun" + (addr.sc_unit.get() - 1);
@@ -60,20 +60,20 @@ public class TunTapInterface implements Interface {
     @Override
     public void read(Buffer buffer) {
         TunTapBuffer ptrBuf = (TunTapBuffer) buffer;
-        long written = Unsafe.POSIX.read(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.readerIndex()), buffer.writeableBytes());
+        long written = Unsafe.LIB_C.read(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.readerIndex()), buffer.writeableBytes());
         buffer.writerIndex(buffer.writerIndex() + written);
     }
 
     @Override
     public void write(Buffer buffer) {
         TunTapBuffer ptrBuf = (TunTapBuffer) buffer;
-        long nbytes = Unsafe.POSIX.write(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.writerIndex()), buffer.readableBytes());
+        long nbytes = Unsafe.LIB_C.write(id.fd, ptrBuf.cast(Pointer.class).slice(buffer.writerIndex()), buffer.readableBytes());
         buffer.readerIndex(buffer.readerIndex() + nbytes);
     }
 
     @Override
     public void close() {
-        Unsafe.POSIX.close(id.fd);
+        Unsafe.LIB_C.close(id.fd);
     }
 
     public static class Id implements Interface.Id {
@@ -84,6 +84,19 @@ public class TunTapInterface implements Interface {
         public Id(int id, int fd) {
             this.id = id;
             this.fd = fd;
+        }
+
+        @Override
+        public Object handle() {
+            return fd;
+        }
+
+        @Override
+        public String toString() {
+            return "Id{" +
+                    "id=" + id +
+                    ", fd=" + fd +
+                    '}';
         }
     }
 }
