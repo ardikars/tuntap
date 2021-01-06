@@ -24,11 +24,9 @@ public interface Buffer {
 
     Buffer resetWriterIndex();
 
-    long address();
-
     <T> T cast(Class<T> buffer);
 
-    void close();
+    boolean release();
 
     interface Sliced {
     }

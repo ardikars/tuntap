@@ -1,25 +1,48 @@
 package tuntap;
 
+import java.net.InetAddress;
+
 public interface Interface {
 
-    Id id();
+    Id<?> id();
 
     String name();
 
-    void read(Buffer buffer);
+    String mode();
 
-    void write(Buffer buffer);
+    long read(Buffer buffer);
+
+    long write(Buffer buffer);
 
     void close();
 
     interface Options {
+
+        String name();
+
+        Mode mode();
+
+        interface Tun extends Mode {
+
+            InetAddress address();
+
+            InetAddress netmask();
+
+        }
+
+        interface Tap extends Mode {
+
+            byte[] address();
+        }
     }
 
-    interface Id {
-        Object handle();
+    interface Id<T> {
+        T value();
     }
 
     interface Mode {
+
+        String name();
 
     }
 }
