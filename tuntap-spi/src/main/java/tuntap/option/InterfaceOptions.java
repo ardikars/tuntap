@@ -1,13 +1,13 @@
 package tuntap.option;
 
-import tuntap.Interface;
+import tuntap.Device;
 
 import java.net.InetAddress;
 
-public class InterfaceOptions implements Interface.Options {
+public class InterfaceOptions implements Device.Options {
 
     private String name;
-    private Interface.Mode mode;
+    private Device.Mode mode;
 
     public static TunInterface tun() {
         return new TunInterface();
@@ -28,16 +28,16 @@ public class InterfaceOptions implements Interface.Options {
     }
 
     @Override
-    public Interface.Mode mode() {
+    public Device.Mode mode() {
         return mode;
     }
 
-    public InterfaceOptions mode(Interface.Mode mode) {
+    public InterfaceOptions mode(Device.Mode mode) {
         this.mode = mode;
         return this;
     }
 
-    public static final class TunInterface implements Interface.Options.Tun {
+    public static final class TunInterface implements Device.Options.Tun {
 
         private InetAddress address;
         private InetAddress netmask;
@@ -71,7 +71,7 @@ public class InterfaceOptions implements Interface.Options {
         }
     }
 
-    public static final class TapInterface implements Interface.Options.Tap {
+    public static final class TapInterface implements Device.Options.Tap {
 
         private byte[] address;
 

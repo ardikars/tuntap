@@ -3,9 +3,9 @@ package tuntap.macos;
 import jnr.ffi.Pointer;
 import jnr.ffi.Struct;
 import tuntap.Buffer;
-import tuntap.Interface;
+import tuntap.Device;
 
-class MacOSJNRTunInterface implements Interface {
+class MacOSJNRTunDevice implements Device {
 
     static final int SYSPROTO_CONTROL = 2;
     static final int AF_SYS_CONTROL = 2;
@@ -18,7 +18,7 @@ class MacOSJNRTunInterface implements Interface {
     private final String name;
     private final String mode;
 
-    public MacOSJNRTunInterface(Interface.Options opts) {
+    public MacOSJNRTunDevice(Device.Options opts) {
         int fd;
         if ((fd = MacOSJNRNative.LIB_C.socket(PF_SYSTEM, SOCK_DGRAM, SYSPROTO_CONTROL)) < 0) {
             throw new RuntimeException();
@@ -92,7 +92,7 @@ class MacOSJNRTunInterface implements Interface {
         return sb.toString();
     }
 
-    private static final class FileDescriptor implements Interface.Id<Integer> {
+    private static final class FileDescriptor implements Device.Id<Integer> {
 
         private final int fd;
 

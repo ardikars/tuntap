@@ -30,6 +30,8 @@ class LinuxJNRNative {
 
         int bind(int sockfd, @In sockaddr addr, @socklen_t long addrlen);
 
+        int listen(int sockfd, int backlog);
+
         int connect(int sockfd, @In @Transient sockaddr address, @socklen_t long address_len);
 
         int open(String pathname, int flags);
@@ -46,10 +48,16 @@ class LinuxJNRNative {
         long read(int fd, @Out Pointer buf, @size_t long count);
 
         @ssize_t
+        long recv(int sockfd, @Out Pointer buf, @size_t long len, int flags);
+
+        @ssize_t
         long recvfrom(int sockfd, @Out Pointer buf, @size_t long len, int flags, @Out sockaddr src_addr, IntByReference addrlen);
 
         @ssize_t
         long write(int fd, @In Pointer buf, @size_t long count);
+
+        @ssize_t
+        long send(int sockfd, @In Pointer buf, @size_t long len, int flags);
 
         @ssize_t
         long sendto(int sockfd, @In Pointer buf, @size_t long size, int flags, @In @Transient sockaddr dst_addr, @socklen_t int addrlen);
@@ -75,6 +83,20 @@ class LinuxJNRNative {
         public final Struct.Signed8[] sa_data = array(new Struct.Signed8[14]);
 
         public sockaddr_impl(Runtime runtime) {
+            super(runtime);
+        }
+    }
+
+    public static class sockaddr_in_impl extends sockaddr {
+
+        public sockaddr_in_impl(Runtime runtime) {
+            super(runtime);
+        }
+    }
+
+    public static class sockaddr_in6_impl extends sockaddr {
+
+        public sockaddr_in6_impl(Runtime runtime) {
             super(runtime);
         }
     }

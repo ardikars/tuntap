@@ -2,7 +2,7 @@ package tuntap;
 
 import java.net.InetAddress;
 
-public interface Interface {
+public interface Device extends Selector.Selectable {
 
     Id<?> id();
 

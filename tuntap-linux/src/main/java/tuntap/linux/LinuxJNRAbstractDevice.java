@@ -3,12 +3,14 @@ package tuntap.linux;
 import jnr.ffi.Pointer;
 import jnr.ffi.Struct;
 import tuntap.Buffer;
-import tuntap.Interface;
+import tuntap.Device;
 
-abstract class LinuxJNRAbstractInterface implements Interface {
+abstract class LinuxJNRAbstractDevice implements Device {
 
     static final int AF_INET = 2;
+    static final int AF_INET6 = 10;
     static final int SOCK_DGRAM = 2;
+    static final int SOCK_STREAM = 1;
     static final int PF_UNSPEC = 0;
 
     static final int O_RDWR = 2;
@@ -28,7 +30,7 @@ abstract class LinuxJNRAbstractInterface implements Interface {
     protected final String name;
     protected final String mode;
 
-    public LinuxJNRAbstractInterface(Interface.Options opts) {
+    public LinuxJNRAbstractDevice(Device.Options opts) {
         int fd;
         if ((fd = LinuxJNRNative.LIB_C.open("/dev/net/tun", O_RDWR)) < 0) {
             throw new RuntimeException();
@@ -112,7 +114,7 @@ abstract class LinuxJNRAbstractInterface implements Interface {
         LinuxJNRNative.LIB_C.close(id.fd);
     }
 
-    private static final class FileDescriptor implements Interface.Id<Integer> {
+    private static final class FileDescriptor implements Device.Id<Integer> {
 
         private final int fd;
 

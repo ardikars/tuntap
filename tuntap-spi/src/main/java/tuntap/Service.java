@@ -2,6 +2,7 @@ package tuntap;
 
 import tuntap.exception.NoSuchProviderException;
 
+import java.net.InetSocketAddress;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -9,7 +10,13 @@ public interface Service {
 
     String name();
 
-    Interface create(Interface.Options option);
+    Device device(Device.Options option);
+
+    Socket.Tcp stream(InetSocketAddress bindAddress, Socket.Tcp.Options options);
+
+    Socket.Udp datagram(InetSocketAddress bindAddress, Socket.Udp.Options options);
+
+    <T extends Selector.Selectable> Selector<T> selector(Class<T> type);
 
     Buffer allocate(long size);
 

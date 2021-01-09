@@ -1,18 +1,18 @@
 package tuntap.linux;
 
-import tuntap.Interface;
+import tuntap.Device;
 
-class LinuxJNRTunInterface extends LinuxJNRAbstractInterface {
+class LinuxJNRTapDevice extends LinuxJNRAbstractDevice {
 
-    public LinuxJNRTunInterface(Interface.Options options) {
+    public LinuxJNRTapDevice(Device.Options options) {
         super(options);
     }
 
     @Override
     protected String requiredName(LinuxJNRNative.ifreq ifr, String reqName) {
-        ifr.ifru_flags.set(IFF_TUN | IFF_NO_PI | IFF_MULTI_QUEUE);
+        ifr.ifru_flags.set(IFF_TAP | IFF_NO_PI | IFF_MULTI_QUEUE);
         if (reqName == null) {
-            reqName = "tun" + 0;
+            reqName = "tap" + 0;
         } else {
             reqName = reqName + 0;
         }
@@ -21,7 +21,7 @@ class LinuxJNRTunInterface extends LinuxJNRAbstractInterface {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("LinuxJNRTunInterface{");
+        final StringBuilder sb = new StringBuilder("LinuxJNRTapInterface{");
         sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
         sb.append(", mode='").append(mode).append('\'');
